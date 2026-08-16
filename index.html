@@ -2,99 +2,81 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Khazar Ayaz | Founder and AI Builder</title>
-  <meta name="description" content="Khazar Ayaz builds practical AI infrastructure, agent memory, MCP systems, and reliability tooling.">
-  <meta name="theme-color" content="#090b12">
-  <meta property="og:title" content="Khazar Ayaz | Founder and AI Builder">
-  <meta property="og:description" content="AI systems that remember, connect, and actually work.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <title>Khazar Ayaz // MoonOS</title>
+  <meta name="description" content="MoonOS is Khazar Ayaz's interactive desktop portfolio: AI memory, MCP infrastructure, agent reliability, and strange software for the living web.">
+  <meta name="theme-color" content="#05070c">
+  <meta property="og:title" content="Khazar Ayaz // MoonOS">
+  <meta property="og:description" content="An interactive desktop portfolio for AI memory, MCP infrastructure, and agent reliability.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://caspianmoon.github.io/">
   <link rel="canonical" href="https://caspianmoon.github.io/">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <style>
-    :root{--bg:#090b12;--panel:#10141f;--line:#252b3b;--text:#f5f3eb;--muted:#9aa2b5;--mint:#8ee8cf;--violet:#8d94ff;--r:24px}
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-    body:before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(to bottom,#000,transparent 75%)}
-    a{color:inherit}.wrap{width:min(1120px,calc(100% - 40px));margin:auto}
-    .nav{position:sticky;top:0;z-index:5;background:rgba(9,11,18,.82);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
-    .navin{height:74px;display:flex;align-items:center;justify-content:space-between}
-    .brand{display:flex;gap:11px;align-items:center;text-decoration:none}.moon{width:28px;height:28px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#fff 0 12%,#a8aef8 42%,#303650 72%);box-shadow:inset -8px -6px 10px #090b12}.brand strong{font-size:14px}.brand small{display:block;color:var(--muted);font:10px/1.2 ui-monospace,monospace;letter-spacing:.12em}
-    .links{display:flex;gap:25px;align-items:center}.links a{font-size:13px;color:var(--muted);text-decoration:none}.links a:hover{color:var(--mint)}.pill{border:1px solid var(--line);border-radius:999px;padding:8px 13px!important;color:var(--text)!important}
-    .hero{min-height:760px;display:grid;grid-template-columns:1.2fr .8fr;gap:70px;align-items:center;padding:88px 0}.kicker,.label{font:700 11px/1.2 ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--mint)}
-    h1,h2,h3{font-family:Georgia,"Times New Roman",serif;letter-spacing:-.045em;line-height:.98;margin:0}h1{font-size:clamp(58px,8.3vw,112px);max-width:850px;margin:22px 0 28px}h1 em{font-weight:400;color:var(--mint)}
-    .lead{max-width:650px;color:var(--muted);font-size:19px}.actions{display:flex;gap:12px;margin:34px 0 42px}.btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;border-radius:999px;text-decoration:none;font-weight:700;font-size:13px;background:var(--text);color:var(--bg);border:1px solid var(--text)}.btn.alt{background:transparent;color:var(--text);border-color:var(--line)}
-    .stats{display:flex;gap:28px}.stat strong{display:block;font:700 25px/1 ui-monospace,monospace}.stat span{font-size:11px;color:var(--muted)}
-    .map{aspect-ratio:1;border:1px solid var(--line);border-radius:50%;position:relative;background:radial-gradient(circle,rgba(142,232,207,.12),transparent 56%);animation:float 7s ease-in-out infinite}.map:before,.map:after{content:"";position:absolute;inset:14%;border:1px solid var(--line);border-radius:50%}.map:after{inset:30%;border-style:dashed}.core{position:absolute;inset:42%;display:grid;place-items:center;border-radius:50%;background:var(--text);color:var(--bg);font:700 18px Georgia}.node{position:absolute;padding:8px 11px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font:700 10px ui-monospace,monospace;letter-spacing:.08em}.n1{top:8%;left:38%}.n2{top:42%;right:-5%}.n3{bottom:10%;left:41%}.n4{top:43%;left:-7%}@keyframes float{50%{transform:translateY(-10px) rotate(1deg)}}
-    section{padding:115px 0;border-top:1px solid var(--line)}.intro{display:grid;grid-template-columns:.55fr 1.45fr;gap:60px}.intro h2,.head h2{font-size:clamp(44px,6vw,78px)}.intro p{color:var(--muted);font-size:21px;margin:0;max-width:760px}.head{display:flex;align-items:end;justify-content:space-between;gap:30px;margin-bottom:48px}.head p{max-width:440px;color:var(--muted);margin:0}
-    .featured{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;padding:48px;border:1px solid var(--line);border-radius:var(--r);background:linear-gradient(145deg,rgba(141,148,255,.09),rgba(142,232,207,.04))}.featured h3{font-size:clamp(48px,6vw,78px);margin:16px 0}.featured p,.card p{color:var(--muted)}code{display:block;margin:28px 0 24px;padding:15px 17px;border:1px solid var(--line);border-radius:12px;background:#090b12;color:var(--mint);font-size:13px}.tags{display:flex;flex-wrap:wrap;gap:8px}.tags span{border:1px solid var(--line);border-radius:999px;padding:6px 10px;color:var(--muted);font-size:11px}
-    .memory{min-height:330px;display:grid;place-items:center;position:relative}.memory b{display:grid;place-items:center;width:118px;height:118px;border:1px solid var(--mint);border-radius:50%;box-shadow:0 0 80px rgba(142,232,207,.15);font:700 13px ui-monospace,monospace}.memory i{position:absolute;width:13px;height:13px;border-radius:50%;background:var(--violet);box-shadow:0 0 18px var(--violet)}.memory i:nth-child(2){top:12%;left:26%}.memory i:nth-child(3){top:28%;right:13%}.memory i:nth-child(4){bottom:16%;right:29%}.memory i:nth-child(5){bottom:22%;left:15%}
-    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}.card{min-height:310px;padding:30px;border:1px solid var(--line);border-radius:var(--r);background:var(--panel);display:flex;flex-direction:column}.card .num{font:11px ui-monospace,monospace;color:var(--mint)}.card h3{font-size:38px;margin:55px 0 14px}.card a{margin-top:auto;text-decoration:none;font-weight:700;font-size:13px}.card a:hover{color:var(--mint)}
-    .principles{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);margin-top:48px}.principle{padding:30px 28px 10px 0}.principle+.principle{border-left:1px solid var(--line);padding-left:28px}.principle h3{font-size:30px;margin:14px 0}.principle p{color:var(--muted)}
-    .about{display:grid;grid-template-columns:.7fr 1.3fr;gap:70px;align-items:start}.portrait{aspect-ratio:1;border:1px solid var(--line);border-radius:var(--r);display:grid;place-items:center;background:radial-gradient(circle at 40% 35%,#424968,#151925 58%)}.portrait span{font:700 clamp(70px,10vw,130px) Georgia;background:linear-gradient(135deg,#fff,var(--mint));color:transparent;background-clip:text}.about h2{font-size:clamp(45px,6vw,76px);margin:18px 0 28px}.about p{color:var(--muted);font-size:18px}
-    .cta{border-radius:var(--r);background:var(--text);color:var(--bg);padding:70px;margin-bottom:100px}.cta h2{font-size:clamp(44px,6vw,78px);max-width:900px;margin:15px 0 26px}.cta p{color:#5f6470;max-width:620px}.cta .btn{background:var(--bg);color:var(--text);border-color:var(--bg);margin-top:12px}
-    footer{border-top:1px solid var(--line);padding:40px 0;color:var(--muted);font-size:12px}.foot{display:flex;justify-content:space-between;gap:20px}.foot a{text-decoration:none}
-    @media(max-width:820px){.links a:not(.pill){display:none}.hero{grid-template-columns:1fr;min-height:auto;padding:80px 0}.map{width:min(480px,90vw);margin:auto}.intro,.featured,.about{grid-template-columns:1fr}.head{display:block}.head p{margin-top:20px}.cards,.principles{grid-template-columns:1fr}.principle+.principle{border-left:0;border-top:1px solid var(--line);padding-left:0}.cta{padding:45px 28px}}
-    @media(max-width:520px){.wrap{width:min(100% - 28px,1120px)}h1{font-size:52px}.stats{gap:16px}.featured{padding:28px}.actions{flex-direction:column}.foot{flex-direction:column}}
+    :root{color-scheme:dark;font-family:"Courier New",monospace;background:#05070c;color:#b9ffd8}
+    *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#05070c}
+    body{display:grid;place-items:center;background:radial-gradient(circle at 75% 35%,#113f49 0,transparent 34%),linear-gradient(145deg,#020407,#071116)}
+    .loader{width:min(680px,calc(100% - 36px));border:1px solid #54ffd0;background:rgba(0,7,10,.88);box-shadow:0 0 50px rgba(84,255,208,.13);padding:22px}
+    .mark{font-weight:700;font-size:clamp(28px,7vw,62px);letter-spacing:-.08em;color:#ecfff9}.mark span{color:#54ffd0}.sub{margin:8px 0 22px;color:#7fa99e;font-size:12px;letter-spacing:.16em;text-transform:uppercase}
+    .log{min-height:136px;white-space:pre-wrap;font-size:12px;line-height:1.7}.bar{height:9px;border:1px solid #54ffd0;padding:1px;margin-top:18px}.bar i{display:block;height:100%;width:16%;background:#54ffd0;animation:load 1.25s steps(6,end) infinite}.hint{margin-top:10px;color:#6e8d85;font-size:10px}
+    @keyframes load{to{width:100%}}
+    .error{color:#ff8b9e}.error a{color:#54ffd0}
   </style>
 </head>
 <body>
-  <header class="nav">
-    <div class="wrap navin">
-      <a class="brand" href="#top"><span class="moon"></span><span><strong>Khazar Ayaz</strong><small>@CASPIANMOON</small></span></a>
-      <nav class="links"><a href="#work">Work</a><a href="#principles">Principles</a><a href="#about">About</a><a class="pill" href="https://github.com/caspianmoon">GitHub ↗</a></nav>
-    </div>
-  </header>
-  <main>
-    <section class="hero wrap" id="top">
-      <div>
-        <p class="kicker">Founder of KNWN · Creator of Memoripy</p>
-        <h1>I build AI systems that <em>remember, connect,</em> and actually work.</h1>
-        <p class="lead">I work on agent memory, MCP infrastructure, reliability tooling, and interfaces that make complex AI systems useful to real people.</p>
-        <div class="actions"><a class="btn" href="#work">Explore the work ↓</a><a class="btn alt" href="https://knwn.app">Visit KNWN ↗</a></div>
-        <div class="stats"><div class="stat"><strong data-stars>693</strong><span>Memoripy stars</span></div><div class="stat"><strong data-forks>60</strong><span>community forks</span></div><div class="stat"><strong>5</strong><span>public repos</span></div></div>
-      </div>
-      <div class="map" aria-label="System map of Khazar's work"><span class="core">KH</span><span class="node n1">MEMORY</span><span class="node n2">MCP</span><span class="node n3">AGENTS</span><span class="node n4">RELIABILITY</span></div>
-    </section>
-    <section>
-      <div class="wrap intro"><p class="label">01 / The problem</p><div><h2>Most AI products look intelligent in a demo.</h2><p>The real work begins when people actually use them. Context disappears, tools misfire, fragmented requests get misunderstood, and nobody can explain where the agent failed. I build the missing infrastructure between impressive models and dependable products.</p></div></div>
-    </section>
-    <section id="work">
-      <div class="wrap">
-        <div class="head"><div><p class="label">02 / Selected work</p><h2>Systems, not wrappers.</h2></div><p>Open-source experiments and production products focused on the parts of AI that still break under real use.</p></div>
-        <article class="featured">
-          <div><p class="label">Featured open source</p><h3>Memoripy</h3><p>A context-aware memory layer for AI applications with short and long-term storage, semantic clustering, graph associations, retrieval, decay, and reinforcement.</p><code>pip install memoripy</code><div class="tags"><span>Python</span><span>Agent memory</span><span>Semantic retrieval</span><span>Apache 2.0</span></div><p><a href="https://github.com/caspianmoon/memoripy">View Memoripy on GitHub ↗</a></p></div>
-          <div class="memory" aria-hidden="true"><b>MEMORY</b><i></i><i></i><i></i><i></i></div>
-        </article>
-        <div class="cards">
-          <article class="card"><span class="num">01 / OPEN SOURCE</span><h3>Replyhold</h3><p>A debounce layer that merges bursts of fragmented chat messages into one coherent request before an AI agent responds.</p><a href="https://github.com/caspianmoon/replyhold">View repository ↗</a></article>
-          <article class="card"><span class="num">02 / OPEN SOURCE</span><h3>JSONPaws</h3><p>A compact Python library for generating predictable structured JSON from language models.</p><a href="https://github.com/caspianmoon/jsonpaws">View repository ↗</a></article>
-          <article class="card"><span class="num">03 / COMPANY</span><h3>KNWN</h3><p>Production MCP servers, ChatGPT apps, analytics, and agent infrastructure for companies with real APIs, content, and users.</p><a href="https://knwn.app">Visit KNWN ↗</a></article>
-        </div>
-      </div>
-    </section>
-    <section id="principles">
-      <div class="wrap"><p class="label">03 / Operating principles</p><div class="principles">
-        <article class="principle"><span>01</span><h3>Start with the failure.</h3><p>The interesting problem is rarely the happy path. I look for where users lose trust, state disappears, or agents take the wrong action.</p></article>
-        <article class="principle"><span>02</span><h3>Make complexity legible.</h3><p>Infrastructure becomes valuable when non-specialists can operate it. Good interfaces expose control without exposing chaos.</p></article>
-        <article class="principle"><span>03</span><h3>Measure beyond the demo.</h3><p>A polished first run proves little. Instrument the real workflow, inspect failures, and judge what survives repeated use.</p></article>
-      </div></div>
-    </section>
-    <section id="about">
-      <div class="wrap about"><div class="portrait"><span>KH</span></div><div><p class="label">04 / About</p><h2>Founder first. Engineer by necessity.</h2><p>I have spent years turning messy operational problems into software, from logistics and research products to AI agents and developer infrastructure. I care less about impressive prototypes than systems people can understand, trust, and keep using.</p><p>Today I am building KNWN and working on the missing infrastructure around AI memory, MCP, agent reliability, and human-friendly control.</p><div class="actions"><a class="btn alt" href="https://github.com/caspianmoon">GitHub ↗</a><a class="btn alt" href="https://github.com/caspianmoon/memoripy">Memoripy ↗</a></div></div></div>
-    </section>
-    <section class="wrap cta"><p class="label">05 / Build together</p><h2>Does your AI product need memory, tools, or a way to fail less?</h2><p>KNWN builds production MCP servers, ChatGPT apps, and the infrastructure around them.</p><a class="btn" href="https://knwn.app/contact">Discuss a build ↗</a></section>
+  <main class="loader" id="loader" aria-live="polite">
+    <div class="mark">moon<span>OS</span></div>
+    <div class="sub">caspian build // mounting personal machine</div>
+    <div class="log" id="log">[ OK ] locating desktop image...\n[ .. ] loading terminal services...</div>
+    <div class="bar" aria-hidden="true"><i></i></div>
+    <div class="hint">The first boot may take a moment.</div>
   </main>
-  <footer><div class="wrap foot"><span>© <span id="year">2026</span> Khazar Ayaz</span><span><a href="https://github.com/caspianmoon">GitHub</a> · <a href="https://knwn.app">KNWN</a></span></div></footer>
   <script>
-    document.getElementById('year').textContent=new Date().getFullYear();
-    fetch('https://api.github.com/repos/caspianmoon/memoripy').then(r=>r.ok?r.json():Promise.reject()).then(d=>{
-      const f=new Intl.NumberFormat('en',{notation:'compact'});
-      document.querySelector('[data-stars]').textContent=f.format(d.stargazers_count);
-      document.querySelector('[data-forks]').textContent=f.format(d.forks_count);
-    }).catch(()=>{});
+    (() => {
+      const log = document.getElementById('log');
+      const version = 'moonos-20260816-1';
+
+      async function unpack(path) {
+        if (!('DecompressionStream' in window)) {
+          throw new Error('This browser does not support the MoonOS decompressor.');
+        }
+        const response = await fetch(`${path}?v=${version}`, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`Could not load ${path} (${response.status})`);
+        const encoded = (await response.text()).trim();
+        const binary = atob(encoded);
+        const bytes = new Uint8Array(binary.length);
+        for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
+        const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+        return new Response(stream).text();
+      }
+
+      async function boot() {
+        try {
+          log.textContent += '\n[ OK ] payload located\n[ .. ] restoring window manager...';
+          const [markup, css, javascript] = await Promise.all([
+            unpack('/payload/moonos-html.gz.b64'),
+            unpack('/payload/moonos-css.gz.b64'),
+            unpack('/payload/moonos-js.gz.b64')
+          ]);
+          log.textContent += '\n[ OK ] desktop ready';
+          const closingScript = '</' + 'script';
+          const safeJavascript = javascript.split(closingScript).join('<\\/' + 'script');
+          const documentSource = markup
+            .replace('<link rel="stylesheet" href="/styles.css">', `<style>${css}</style>`)
+            .replace('<script src="/app.js"></' + 'script>', '<script>' + safeJavascript + '</' + 'script>');
+          document.open();
+          document.write(documentSource);
+          document.close();
+        } catch (error) {
+          console.error(error);
+          log.className = 'log error';
+          log.innerHTML = `[ FAIL ] MoonOS did not boot.<br><br>${String(error.message || error)}<br><br><a href="https://github.com/caspianmoon/caspianmoon.github.io">Open the source repository</a>`;
+        }
+      }
+
+      boot();
+    })();
   </script>
 </body>
 </html>
