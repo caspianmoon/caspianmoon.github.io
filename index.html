@@ -4,98 +4,624 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="dark">
-  <title>Khazar Ayaz // MoonOS</title>
-  <meta name="description" content="Khazar Ayaz builds AI memory, MCP infrastructure, agent reliability tooling, and strange software for the living web.">
-  <meta name="theme-color" content="#050607">
-  <meta property="og:title" content="Khazar Ayaz // MoonOS">
-  <meta property="og:description" content="A full-screen terminal portfolio for AI memory, MCP infrastructure, and agent reliability.">
+  <title>Khazar Ayaz / caspianmoon</title>
+  <meta name="description" content="Khazar Ayaz builds KNWN, maintains Memoripy, and publishes software as caspianmoon.">
+  <meta name="theme-color" content="#050805">
+  <meta property="og:title" content="Khazar Ayaz / caspianmoon">
+  <meta property="og:description" content="KNWN, Memoripy, and open-source software by Khazar Ayaz.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://caspianmoon.github.io/">
   <link rel="canonical" href="https://caspianmoon.github.io/">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/styles.css">
+  <style>
+    :root {
+      --bg: #050805;
+      --panel: #070c07;
+      --text: #9df5ae;
+      --bright: #d9ffe0;
+      --dim: #426c49;
+      --faint: #1a2e1e;
+      --link: #66c7ff;
+      --error: #ff8f8f;
+      --font: "Courier New", Courier, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    body[data-theme="amber"] {
+      --bg: #090602;
+      --panel: #0d0903;
+      --text: #ffbd55;
+      --bright: #ffe0a3;
+      --dim: #805b25;
+      --faint: #38260e;
+      --link: #ffdb85;
+    }
+
+    body[data-theme="white"] {
+      --bg: #080808;
+      --panel: #0c0c0c;
+      --text: #d2d2d2;
+      --bright: #ffffff;
+      --dim: #666666;
+      --faint: #292929;
+      --link: #79aaff;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    body {
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 14px;
+      line-height: 1.55;
+      text-shadow: 0 0 7px color-mix(in srgb, var(--text) 18%, transparent);
+    }
+
+    button, input { font: inherit; }
+
+    a {
+      color: var(--link);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    a:hover { color: var(--bright); }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      pointer-events: none;
+      opacity: .16;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 2px,
+        rgba(0, 0, 0, .22) 3px,
+        rgba(0, 0, 0, .22) 4px
+      );
+    }
+
+    .screen {
+      height: 100svh;
+      min-height: 100%;
+      display: grid;
+      grid-template-rows: auto auto minmax(0, 1fr) auto;
+      background:
+        radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--text) 3%, transparent), transparent 60%),
+        var(--bg);
+    }
+
+    .bar,
+    .menu,
+    .prompt-row {
+      border-color: var(--faint);
+      border-style: solid;
+    }
+
+    .bar {
+      min-height: 34px;
+      padding: 7px clamp(14px, 2.5vw, 34px);
+      border-width: 0 0 1px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .bar strong {
+      color: var(--bright);
+      font-weight: 400;
+    }
+
+    .connected::before {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      margin-right: 7px;
+      border-radius: 50%;
+      background: var(--text);
+      box-shadow: 0 0 8px var(--text);
+      vertical-align: 1px;
+    }
+
+    .menu {
+      padding: 9px clamp(14px, 2.5vw, 34px);
+      border-width: 0 0 1px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 18px;
+      background: var(--panel);
+    }
+
+    .menu button,
+    .inline-command {
+      appearance: none;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--link);
+      font-family: inherit;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      cursor: pointer;
+    }
+
+    .menu button:hover,
+    .menu button:focus-visible,
+    .inline-command:hover,
+    .inline-command:focus-visible {
+      color: var(--bright);
+      outline: none;
+    }
+
+    .output {
+      min-height: 0;
+      overflow: auto;
+      padding: clamp(18px, 3.5vw, 48px) clamp(14px, 4vw, 58px);
+      scrollbar-width: thin;
+      scrollbar-color: var(--dim) var(--bg);
+    }
+
+    .buffer {
+      width: min(84ch, 100%);
+      min-height: 100%;
+    }
+
+    .line { min-height: 1.55em; }
+    .blank { height: 1.55em; }
+    .bright { color: var(--bright); }
+    .dim { color: var(--dim); }
+    .error { color: var(--error); }
+    .indent { padding-left: 2ch; }
+
+    .name {
+      color: var(--bright);
+      font-size: clamp(18px, 2vw, 24px);
+      line-height: 1.25;
+    }
+
+    .rule {
+      color: var(--dim);
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: minmax(10ch, 16ch) minmax(10ch, 15ch) 1fr;
+      gap: 2ch;
+      align-items: start;
+    }
+
+    .row + .row { margin-top: 4px; }
+    .tag { color: var(--dim); }
+
+    .prompt-row {
+      min-height: 46px;
+      padding: 9px clamp(14px, 2.5vw, 34px);
+      border-width: 1px 0 0;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      background: var(--panel);
+    }
+
+    .prompt {
+      color: var(--bright);
+      white-space: nowrap;
+    }
+
+    .prompt span { color: var(--text); }
+
+    #command {
+      width: 100%;
+      min-width: 0;
+      padding: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--bright);
+      caret-color: var(--text);
+    }
+
+    #command::placeholder { color: var(--dim); opacity: .75; }
+
+    .key-hint {
+      color: var(--dim);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      white-space: nowrap;
+    }
+
+    .boot {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      display: grid;
+      place-items: start;
+      padding: clamp(22px, 5vw, 68px);
+      background: var(--bg);
+      color: var(--text);
+      transition: opacity 160ms linear, visibility 160ms linear;
+    }
+
+    .boot.done {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .boot pre {
+      margin: 0;
+      font: inherit;
+      line-height: 1.75;
+      white-space: pre-wrap;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: .62em;
+      height: 1.05em;
+      margin-left: 2px;
+      background: var(--text);
+      vertical-align: -.15em;
+      animation: blink 900ms steps(1, end) infinite;
+    }
+
+    @keyframes blink { 50% { opacity: 0; } }
+
+    @media (max-width: 680px) {
+      body { font-size: 12px; }
+      .bar { min-height: 30px; }
+      .bar .host { display: none; }
+      .menu { gap: 5px 13px; }
+      .output { padding-top: 22px; }
+      .row {
+        grid-template-columns: 11ch 1fr;
+        gap: 1ch;
+      }
+      .row .description {
+        grid-column: 2;
+        color: var(--dim);
+      }
+      .prompt-row {
+        min-height: 44px;
+        grid-template-columns: auto minmax(0, 1fr);
+      }
+      .key-hint { display: none; }
+    }
+
+    @media (max-height: 600px) {
+      body { font-size: 12px; }
+      .output { padding-top: 16px; padding-bottom: 16px; }
+      .blank { height: 1.1em; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .boot { display: none; }
+      .cursor { animation: none; }
+    }
+  </style>
 </head>
-<body>
-  <canvas id="space" aria-hidden="true"></canvas>
-  <div class="noise" aria-hidden="true"></div>
+<body data-theme="green">
   <div class="scanlines" aria-hidden="true"></div>
-  <div class="vignette" aria-hidden="true"></div>
 
   <div class="boot" id="boot" aria-live="polite">
-    <div class="boot-inner">
-      <div class="boot-mark">moon<span>OS</span></div>
-      <div class="boot-copy"><span class="ok">200</span> identity mounted
-<span class="ok">200</span> memory index restored
-<span class="ok">200</span> knwn.app route verified
-<span class="ok">200</span> terminal ready</div>
-      <div class="boot-bar"></div>
-    </div>
+    <pre id="boot-log">CONNECT caspianmoon.github.io:23</pre>
   </div>
 
-  <div class="shell" id="shell">
-    <header class="topbar">
-      <div class="brand">
-        <span class="brand-glyph" aria-hidden="true"></span>
-        <strong>MOONOS</strong>
-        <span class="path" id="path">moon://khazar/home</span>
-      </div>
-      <button class="mobile-menu" id="mobile-menu" type="button">index</button>
-      <div class="status">
-        <span class="live">online</span>
-        <span>istanbul node</span>
-        <span id="clock">--:--:--</span>
-      </div>
+  <main class="screen" aria-label="Khazar Ayaz personal terminal">
+    <header class="bar">
+      <div><strong>moonOS 0.3</strong> <span class="host">/ caspianmoon</span></div>
+      <div class="connected">connected</div>
     </header>
 
-    <main class="main">
-      <aside class="nav" id="nav" aria-label="MoonOS index">
-        <div class="identity">
-          <small>guest session / caspianmoon</small>
-          <h1>Khazar<br>Ayaz</h1>
-          <p>Founder building memory, tools, and reliability for AI systems.</p>
-        </div>
+    <nav class="menu" aria-label="Commands">
+      <button type="button" data-command="home">home</button>
+      <button type="button" data-command="about">about</button>
+      <button type="button" data-command="projects">projects</button>
+      <button type="button" data-command="memoripy">memoripy</button>
+      <button type="button" data-command="knwn">knwn.app</button>
+      <button type="button" data-command="contact">contact</button>
+      <a href="https://github.com/caspianmoon" target="_blank" rel="noreferrer">github</a>
+    </nav>
 
-        <nav class="nav-list">
-          <button class="nav-btn active" data-view="home" type="button"><span class="num">01</span><span>home</span><span class="key">H</span></button>
-          <button class="nav-btn" data-view="about" type="button"><span class="num">02</span><span>about</span><span class="key">A</span></button>
-          <button class="nav-btn" data-view="work" type="button"><span class="num">03</span><span>work</span><span class="key">W</span></button>
-          <button class="nav-btn" data-view="memoripy" type="button"><span class="num">04</span><span>memoripy</span><span class="key">M</span></button>
-          <button class="nav-btn" data-view="knwn" type="button"><span class="num">05</span><span>knwn.app</span><span class="key">K</span></button>
-          <button class="nav-btn" data-view="contact" type="button"><span class="num">06</span><span>contact</span><span class="key">C</span></button>
-        </nav>
+    <section class="output" id="output" aria-live="polite">
+      <div class="buffer" id="buffer"></div>
+    </section>
 
-        <div class="nav-foot">keyboard enabled<br>type help below<br>no decorative files</div>
-      </aside>
+    <form class="prompt-row" id="terminal-form" autocomplete="off">
+      <label class="prompt" for="command">guest@caspianmoon:<span>~$</span></label>
+      <input id="command" name="command" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="help">
+      <span class="key-hint">enter to run</span>
+    </form>
+  </main>
 
-      <section class="terminal" aria-label="Interactive portfolio terminal">
-        <div class="viewport" id="viewport" tabindex="-1"></div>
-        <form class="terminal-row" id="terminal-form" autocomplete="off">
-          <label class="prompt" for="command">guest@moon:~$</label>
-          <input id="command" name="command" type="text" spellcheck="false" autocomplete="off" placeholder="type a command, for example: work">
-          <span class="enter">enter ↵</span>
-        </form>
-      </section>
+  <script>
+    (() => {
+      'use strict';
 
-      <aside class="side" aria-label="MoonOS signal monitor">
-        <div class="orbital">
-          <div class="orbit-label">orbital object 01<br>lat 41.0082<br>lon 28.9784<br>signal stable</div>
-          <div class="moon" id="moon" aria-hidden="true"></div>
-        </div>
-        <div class="side-data">
-          <div class="datum"><small>current signal</small><strong class="signal" id="signal">memory</strong></div>
-          <div class="datum"><small>protocol</small><strong>MCP / HTTP</strong></div>
-          <div class="datum"><small>repository</small><strong>@caspianmoon</strong></div>
-          <div class="datum"><small>availability</small><strong class="signal">building</strong></div>
-        </div>
-      </aside>
-    </main>
+      const buffer = document.getElementById('buffer');
+      const output = document.getElementById('output');
+      const form = document.getElementById('terminal-form');
+      const input = document.getElementById('command');
+      const boot = document.getElementById('boot');
+      const bootLog = document.getElementById('boot-log');
+      const commandHistory = [];
+      let historyIndex = 0;
 
-    <footer class="bottombar">
-      <span class="tip" id="tip">Try: help, work, memoripy, knwn, contact</span>
-      <div class="links"><a href="https://github.com/caspianmoon" target="_blank" rel="noreferrer">github</a><a href="https://knwn.app" target="_blank" rel="noreferrer">knwn.app</a></div>
-    </footer>
-  </div>
+      const links = {
+        github: 'https://github.com/caspianmoon',
+        memoripy: 'https://github.com/caspianmoon/memoripy',
+        replyhold: 'https://github.com/caspianmoon/replyhold',
+        jsonpaws: 'https://github.com/caspianmoon/jsonpaws',
+        knwn: 'https://knwn.app',
+        contact: 'https://knwn.app/contact',
+        source: 'https://github.com/caspianmoon/caspianmoon.github.io'
+      };
 
-  <script src="/app.js" defer></script>
+      const screens = {
+        home: `
+          <div class="line dim">last login: ${new Date().toDateString()} from web</div>
+          <div class="blank"></div>
+          <div class="line name">Khazar Ayaz</div>
+          <div class="line">I build KNWN and maintain Memoripy.</div>
+          <div class="blank"></div>
+          <div class="line bright">current work</div>
+          <div class="line row"><span>knwn.app</span><span class="tag">company</span><span class="description">MCP servers and ChatGPT apps</span></div>
+          <div class="line row"><span>memoripy</span><span class="tag">open source</span><span class="description">memory library for AI applications</span></div>
+          <div class="line row"><span>replyhold</span><span class="tag">open source</span><span class="description">waits for message bursts before an agent replies</span></div>
+          <div class="line row"><span>jsonpaws</span><span class="tag">open source</span><span class="description">structured JSON generation for language models</span></div>
+          <div class="blank"></div>
+          <div class="line dim">type <button class="inline-command" data-command="help">help</button> or use the links above.</div>`,
+
+        about: `
+          <div class="line dim">guest@caspianmoon:~$ whoami</div>
+          <div class="blank"></div>
+          <div class="line name">Khazar Ayaz</div>
+          <div class="line">I build software and run KNWN.</div>
+          <div class="line">I maintain Memoripy and publish small open-source tools as caspianmoon.</div>
+          <div class="line">Before this, I worked on logistics and research products.</div>
+          <div class="blank"></div>
+          <div class="line"><a href="https://github.com/caspianmoon" target="_blank" rel="noreferrer">github.com/caspianmoon</a></div>`,
+
+        projects: `
+          <div class="line dim">guest@caspianmoon:~$ ls -la projects/</div>
+          <div class="blank"></div>
+          <div class="line rule">--------------------------------------------------------------------------------</div>
+          <div class="line row bright"><span>name</span><span>type</span><span>link</span></div>
+          <div class="line rule">--------------------------------------------------------------------------------</div>
+          <div class="line row"><span>memoripy</span><span class="tag">open source</span><span class="description"><a href="${links.memoripy}" target="_blank" rel="noreferrer">github.com/caspianmoon/memoripy</a></span></div>
+          <div class="line row"><span>replyhold</span><span class="tag">open source</span><span class="description"><a href="${links.replyhold}" target="_blank" rel="noreferrer">github.com/caspianmoon/replyhold</a></span></div>
+          <div class="line row"><span>jsonpaws</span><span class="tag">open source</span><span class="description"><a href="${links.jsonpaws}" target="_blank" rel="noreferrer">github.com/caspianmoon/jsonpaws</a></span></div>
+          <div class="line row"><span>KNWN</span><span class="tag">company</span><span class="description"><a href="${links.knwn}" target="_blank" rel="noreferrer">knwn.app</a></span></div>
+          <div class="line rule">--------------------------------------------------------------------------------</div>`,
+
+        memoripy: `
+          <div class="line dim">guest@caspianmoon:~$ cat projects/memoripy.txt</div>
+          <div class="blank"></div>
+          <div class="line name">Memoripy</div>
+          <div class="line">Python memory layer for AI applications.</div>
+          <div class="blank"></div>
+          <div class="line indent">short-term and long-term memory</div>
+          <div class="line indent">retrieval, decay, and reinforcement</div>
+          <div class="line indent">semantic clustering and graph associations</div>
+          <div class="blank"></div>
+          <div class="line bright">$ pip install memoripy</div>
+          <div class="blank"></div>
+          <div class="line"><a href="${links.memoripy}" target="_blank" rel="noreferrer">open repository</a></div>`,
+
+        knwn: `
+          <div class="line dim">guest@caspianmoon:~$ open https://knwn.app</div>
+          <div class="blank"></div>
+          <div class="line name">KNWN</div>
+          <div class="line">We build MCP servers and ChatGPT apps for companies.</div>
+          <div class="blank"></div>
+          <div class="line indent">authentication and permissions</div>
+          <div class="line indent">tool design and implementation</div>
+          <div class="line indent">testing, deployment, analytics, security, and handover</div>
+          <div class="blank"></div>
+          <div class="line"><a href="${links.knwn}" target="_blank" rel="noreferrer">knwn.app</a></div>
+          <div class="line"><a href="${links.contact}" target="_blank" rel="noreferrer">knwn.app/contact</a></div>`,
+
+        contact: `
+          <div class="line dim">guest@caspianmoon:~$ contact</div>
+          <div class="blank"></div>
+          <div class="line bright">commercial work</div>
+          <div class="line indent"><a href="${links.contact}" target="_blank" rel="noreferrer">https://knwn.app/contact</a></div>
+          <div class="blank"></div>
+          <div class="line bright">code and open source</div>
+          <div class="line indent"><a href="${links.github}" target="_blank" rel="noreferrer">https://github.com/caspianmoon</a></div>`,
+
+        help: `
+          <div class="line dim">moonOS commands</div>
+          <div class="blank"></div>
+          <div class="line row"><span>home</span><span class="tag">page</span><span class="description">start screen</span></div>
+          <div class="line row"><span>about</span><span class="tag">page</span><span class="description">short bio</span></div>
+          <div class="line row"><span>projects</span><span class="tag">page</span><span class="description">project list</span></div>
+          <div class="line row"><span>memoripy</span><span class="tag">page</span><span class="description">Memoripy details</span></div>
+          <div class="line row"><span>knwn</span><span class="tag">page</span><span class="description">KNWN details</span></div>
+          <div class="line row"><span>contact</span><span class="tag">page</span><span class="description">contact links</span></div>
+          <div class="line row"><span>github</span><span class="tag">open</span><span class="description">GitHub profile</span></div>
+          <div class="line row"><span>source</span><span class="tag">open</span><span class="description">website repository</span></div>
+          <div class="line row"><span>theme</span><span class="tag">setting</span><span class="description">green, amber, or white</span></div>
+          <div class="line row"><span>time</span><span class="tag">system</span><span class="description">local browser time</span></div>
+          <div class="line row"><span>clear</span><span class="tag">system</span><span class="description">clear the screen</span></div>`
+      };
+
+      function bindCommands() {
+        buffer.querySelectorAll('[data-command]').forEach((element) => {
+          element.addEventListener('click', () => run(element.dataset.command));
+        });
+      }
+
+      function setUrl(value) {
+        try { window.history.replaceState(null, '', value); } catch {}
+      }
+
+      function render(name) {
+        buffer.innerHTML = screens[name] || screens.home;
+        bindCommands();
+        output.scrollTop = 0;
+        setUrl(name === 'home' ? location.pathname : `#${name}`);
+      }
+
+      function showMessage(command, html, className = '') {
+        buffer.innerHTML = `
+          <div class="line dim">guest@caspianmoon:~$ ${escapeHtml(command)}</div>
+          <div class="blank"></div>
+          <div class="line ${className}">${html}</div>`;
+        output.scrollTop = 0;
+      }
+
+      function setTheme(theme) {
+        const valid = ['green', 'amber', 'white'];
+        if (!valid.includes(theme)) {
+          showMessage(`theme ${theme}`.trim(), 'usage: theme green | amber | white', 'error');
+          return;
+        }
+        document.body.dataset.theme = theme;
+        showMessage(`theme ${theme}`, `theme set to ${theme}`);
+      }
+
+      function run(raw) {
+        const value = String(raw || '').trim();
+        if (!value) return;
+        commandHistory.push(value);
+        historyIndex = commandHistory.length;
+
+        const normalized = value.toLowerCase().replace(/\s+/g, ' ');
+        const aliases = {
+          'home': 'home', 'cd ~': 'home',
+          'about': 'about', 'whoami': 'about', 'cat about.txt': 'about',
+          'projects': 'projects', 'work': 'projects', 'ls': 'projects', 'ls projects': 'projects', 'ls -la projects/': 'projects',
+          'memoripy': 'memoripy', 'cat memoripy': 'memoripy',
+          'knwn': 'knwn', 'knwn.app': 'knwn',
+          'contact': 'contact',
+          'help': 'help', '?': 'help'
+        };
+
+        if (aliases[normalized]) {
+          render(aliases[normalized]);
+          return;
+        }
+
+        if (normalized === 'github') {
+          window.open(links.github, '_blank', 'noopener,noreferrer');
+          showMessage(value, `<a href="${links.github}" target="_blank" rel="noreferrer">${links.github}</a>`);
+          return;
+        }
+
+        if (normalized === 'source') {
+          window.open(links.source, '_blank', 'noopener,noreferrer');
+          showMessage(value, `<a href="${links.source}" target="_blank" rel="noreferrer">${links.source}</a>`);
+          return;
+        }
+
+        if (normalized === 'time' || normalized === 'date') {
+          showMessage(value, escapeHtml(new Date().toString()));
+          return;
+        }
+
+        if (normalized === 'clear' || normalized === 'cls') {
+          buffer.innerHTML = '';
+          setUrl(location.pathname);
+          return;
+        }
+
+        if (normalized === 'reboot') {
+          location.reload();
+          return;
+        }
+
+        if (normalized === 'theme') {
+          showMessage(value, 'themes: green, amber, white');
+          return;
+        }
+
+        if (normalized.startsWith('theme ')) {
+          setTheme(normalized.split(' ')[1]);
+          return;
+        }
+
+        showMessage(value, `command not found: ${escapeHtml(value)}<br>type <button class="inline-command" data-command="help">help</button>`, 'error');
+        bindCommands();
+      }
+
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, (character) => ({
+          '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        })[character]);
+      }
+
+      document.querySelectorAll('[data-command]').forEach((element) => {
+        element.addEventListener('click', () => run(element.dataset.command));
+      });
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        run(input.value);
+        input.value = '';
+        input.focus();
+      });
+
+      input.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowUp') {
+          event.preventDefault();
+          if (!commandHistory.length) return;
+          historyIndex = Math.max(0, historyIndex - 1);
+          input.value = commandHistory[historyIndex] || '';
+        }
+        if (event.key === 'ArrowDown') {
+          event.preventDefault();
+          historyIndex = Math.min(commandHistory.length, historyIndex + 1);
+          input.value = commandHistory[historyIndex] || '';
+        }
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === '/' && document.activeElement !== input) {
+          event.preventDefault();
+          input.focus();
+        }
+      });
+
+      const bootLines = [
+        'CONNECT caspianmoon.github.io:23',
+        'LOGIN guest',
+        'ACCESS GRANTED'
+      ];
+      let bootIndex = 1;
+      const bootTimer = setInterval(() => {
+        bootLog.textContent = bootLines.slice(0, bootIndex + 1).join('\n');
+        bootIndex += 1;
+        if (bootIndex >= bootLines.length) {
+          clearInterval(bootTimer);
+          setTimeout(() => {
+            boot.classList.add('done');
+            input.focus();
+          }, 180);
+        }
+      }, 140);
+
+      const initial = location.hash.replace('#', '');
+      render(Object.prototype.hasOwnProperty.call(screens, initial) ? initial : 'home');
+    })();
+  </script>
 </body>
 </html>
