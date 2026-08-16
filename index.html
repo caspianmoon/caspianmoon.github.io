@@ -5,78 +5,97 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="dark">
   <title>Khazar Ayaz // MoonOS</title>
-  <meta name="description" content="MoonOS is Khazar Ayaz's interactive desktop portfolio: AI memory, MCP infrastructure, agent reliability, and strange software for the living web.">
-  <meta name="theme-color" content="#05070c">
+  <meta name="description" content="Khazar Ayaz builds AI memory, MCP infrastructure, agent reliability tooling, and strange software for the living web.">
+  <meta name="theme-color" content="#050607">
   <meta property="og:title" content="Khazar Ayaz // MoonOS">
-  <meta property="og:description" content="An interactive desktop portfolio for AI memory, MCP infrastructure, and agent reliability.">
+  <meta property="og:description" content="A full-screen terminal portfolio for AI memory, MCP infrastructure, and agent reliability.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://caspianmoon.github.io/">
   <link rel="canonical" href="https://caspianmoon.github.io/">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <style>
-    :root{color-scheme:dark;font-family:"Courier New",monospace;background:#05070c;color:#b9ffd8}
-    *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#05070c}
-    body{display:grid;place-items:center;background:radial-gradient(circle at 75% 35%,#113f49 0,transparent 34%),linear-gradient(145deg,#020407,#071116)}
-    .loader{width:min(680px,calc(100% - 36px));border:1px solid #54ffd0;background:rgba(0,7,10,.88);box-shadow:0 0 50px rgba(84,255,208,.13);padding:22px}
-    .mark{font-weight:700;font-size:clamp(28px,7vw,62px);letter-spacing:-.08em;color:#ecfff9}.mark span{color:#54ffd0}.sub{margin:8px 0 22px;color:#7fa99e;font-size:12px;letter-spacing:.16em;text-transform:uppercase}
-    .log{min-height:136px;white-space:pre-wrap;font-size:12px;line-height:1.7}.bar{height:9px;border:1px solid #54ffd0;padding:1px;margin-top:18px}.bar i{display:block;height:100%;width:16%;background:#54ffd0;animation:load 1.25s steps(6,end) infinite}.hint{margin-top:10px;color:#6e8d85;font-size:10px}
-    @keyframes load{to{width:100%}}
-    .error{color:#ff8b9e}.error a{color:#54ffd0}
-  </style>
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <main class="loader" id="loader" aria-live="polite">
-    <div class="mark">moon<span>OS</span></div>
-    <div class="sub">caspian build // mounting personal machine</div>
-    <div class="log" id="log">[ OK ] locating desktop image...\n[ .. ] loading terminal services...</div>
-    <div class="bar" aria-hidden="true"><i></i></div>
-    <div class="hint">The first boot may take a moment.</div>
-  </main>
-  <script>
-    (() => {
-      const log = document.getElementById('log');
-      const version = 'moonos-20260816-2';
+  <canvas id="space" aria-hidden="true"></canvas>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
 
-      async function unpack(path) {
-        if (!('DecompressionStream' in window)) {
-          throw new Error('This browser does not support the MoonOS decompressor.');
-        }
-        const response = await fetch(`${path}?v=${version}`, { cache: 'no-store' });
-        if (!response.ok) throw new Error(`Could not load ${path} (${response.status})`);
-        const encoded = (await response.text()).trim();
-        const binary = atob(encoded);
-        const bytes = new Uint8Array(binary.length);
-        for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
-        const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
-        return new Response(stream).text();
-      }
+  <div class="boot" id="boot" aria-live="polite">
+    <div class="boot-inner">
+      <div class="boot-mark">moon<span>OS</span></div>
+      <div class="boot-copy"><span class="ok">200</span> identity mounted
+<span class="ok">200</span> memory index restored
+<span class="ok">200</span> knwn.app route verified
+<span class="ok">200</span> terminal ready</div>
+      <div class="boot-bar"></div>
+    </div>
+  </div>
 
-      async function boot() {
-        try {
-          log.textContent += '\n[ OK ] payload located\n[ .. ] restoring window manager...';
-          const [markup, css, javascript] = await Promise.all([
-            unpack('/payload/moonos-html.gz.b64'),
-            unpack('/payload/moonos-css.gz.b64'),
-            unpack('/payload/moonos-js.gz.b64')
-          ]);
-          log.textContent += '\n[ OK ] desktop ready';
-          const closingScript = '</' + 'script';
-          const safeJavascript = javascript.split(closingScript).join('<\\/' + 'script');
-          const documentSource = markup
-            .replace('<link rel="stylesheet" href="/styles.css">', () => `<style>${css}</style>`)
-            .replace('<script src="/app.js"></' + 'script>', () => '<script>' + safeJavascript + '</' + 'script>');
-          document.open();
-          document.write(documentSource);
-          document.close();
-        } catch (error) {
-          console.error(error);
-          log.className = 'log error';
-          log.innerHTML = `[ FAIL ] MoonOS did not boot.<br><br>${String(error.message || error)}<br><br><a href="https://github.com/caspianmoon/caspianmoon.github.io">Open the source repository</a>`;
-        }
-      }
+  <div class="shell" id="shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-glyph" aria-hidden="true"></span>
+        <strong>MOONOS</strong>
+        <span class="path" id="path">moon://khazar/home</span>
+      </div>
+      <button class="mobile-menu" id="mobile-menu" type="button">index</button>
+      <div class="status">
+        <span class="live">online</span>
+        <span>istanbul node</span>
+        <span id="clock">--:--:--</span>
+      </div>
+    </header>
 
-      boot();
-    })();
-  </script>
+    <main class="main">
+      <aside class="nav" id="nav" aria-label="MoonOS index">
+        <div class="identity">
+          <small>guest session / caspianmoon</small>
+          <h1>Khazar<br>Ayaz</h1>
+          <p>Founder building memory, tools, and reliability for AI systems.</p>
+        </div>
+
+        <nav class="nav-list">
+          <button class="nav-btn active" data-view="home" type="button"><span class="num">01</span><span>home</span><span class="key">H</span></button>
+          <button class="nav-btn" data-view="about" type="button"><span class="num">02</span><span>about</span><span class="key">A</span></button>
+          <button class="nav-btn" data-view="work" type="button"><span class="num">03</span><span>work</span><span class="key">W</span></button>
+          <button class="nav-btn" data-view="memoripy" type="button"><span class="num">04</span><span>memoripy</span><span class="key">M</span></button>
+          <button class="nav-btn" data-view="knwn" type="button"><span class="num">05</span><span>knwn.app</span><span class="key">K</span></button>
+          <button class="nav-btn" data-view="contact" type="button"><span class="num">06</span><span>contact</span><span class="key">C</span></button>
+        </nav>
+
+        <div class="nav-foot">keyboard enabled<br>type help below<br>no decorative files</div>
+      </aside>
+
+      <section class="terminal" aria-label="Interactive portfolio terminal">
+        <div class="viewport" id="viewport" tabindex="-1"></div>
+        <form class="terminal-row" id="terminal-form" autocomplete="off">
+          <label class="prompt" for="command">guest@moon:~$</label>
+          <input id="command" name="command" type="text" spellcheck="false" autocomplete="off" placeholder="type a command, for example: work">
+          <span class="enter">enter ↵</span>
+        </form>
+      </section>
+
+      <aside class="side" aria-label="MoonOS signal monitor">
+        <div class="orbital">
+          <div class="orbit-label">orbital object 01<br>lat 41.0082<br>lon 28.9784<br>signal stable</div>
+          <div class="moon" id="moon" aria-hidden="true"></div>
+        </div>
+        <div class="side-data">
+          <div class="datum"><small>current signal</small><strong class="signal" id="signal">memory</strong></div>
+          <div class="datum"><small>protocol</small><strong>MCP / HTTP</strong></div>
+          <div class="datum"><small>repository</small><strong>@caspianmoon</strong></div>
+          <div class="datum"><small>availability</small><strong class="signal">building</strong></div>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="bottombar">
+      <span class="tip" id="tip">Try: help, work, memoripy, knwn, contact</span>
+      <div class="links"><a href="https://github.com/caspianmoon" target="_blank" rel="noreferrer">github</a><a href="https://knwn.app" target="_blank" rel="noreferrer">knwn.app</a></div>
+    </footer>
+  </div>
+
+  <script src="/app.js" defer></script>
 </body>
 </html>
